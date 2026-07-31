@@ -9,7 +9,7 @@ import {
   notFound,
   serverError,
 } from "@/lib/api";
-import { serializeTask } from "@/lib/serialize";
+import { serializeTask, type Lean } from "@/lib/serialize";
 import { taskUpdateSchema } from "@/lib/validations";
 import { parseISODate } from "@/lib/date";
 
@@ -45,7 +45,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     }).lean();
 
     if (!doc) return notFound("Task not found");
-    return NextResponse.json(serializeTask(doc as TaskDoc & { _id: string }));
+    return NextResponse.json(serializeTask(doc as Lean<TaskDoc>));
   } catch (error) {
     console.error("PATCH /api/tasks/:id", error);
     return serverError();

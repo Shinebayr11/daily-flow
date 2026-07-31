@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { WeeklyPlan, type WeeklyPlanDoc } from "@/models/WeeklyPlan";
 import { getUserId, unauthorized, badRequest, serverError } from "@/lib/api";
-import { serializeWeeklyPlan } from "@/lib/serialize";
+import { serializeWeeklyPlan, type Lean } from "@/lib/serialize";
 import { weeklyPlanSchema } from "@/lib/validations";
 import { getWeekStart, parseISODate } from "@/lib/date";
 
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
         createdAt: new Date().toISOString(),
       });
     }
-    return NextResponse.json(serializeWeeklyPlan(doc as WeeklyPlanDoc & { _id: string }));
+    return NextResponse.json(serializeWeeklyPlan(doc as Lean<WeeklyPlanDoc>));
   } catch (error) {
     console.error("GET /api/weekly-plan", error);
     return serverError();
@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest) {
     ).lean();
 
     return NextResponse.json(
-      serializeWeeklyPlan(doc as WeeklyPlanDoc & { _id: string }),
+      serializeWeeklyPlan(doc as Lean<WeeklyPlanDoc>),
     );
   } catch (error) {
     console.error("PUT /api/weekly-plan", error);

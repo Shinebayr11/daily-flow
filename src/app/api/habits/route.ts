@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Habit, type HabitDoc } from "@/models/Habit";
 import { getUserId, unauthorized, badRequest, serverError } from "@/lib/api";
-import { serializeHabit } from "@/lib/serialize";
+import { serializeHabit, type Lean } from "@/lib/serialize";
 import { habitSchema } from "@/lib/validations";
 
 /** GET /api/habits — all habits for the current user. */
@@ -14,7 +14,7 @@ export async function GET() {
     await connectToDatabase();
     const docs = await Habit.find({ userId }).sort({ createdAt: 1 }).lean();
     return NextResponse.json(
-      docs.map((d) => serializeHabit(d as HabitDoc & { _id: string })),
+      docs.map((d) => serializeHabit(d as Lean<HabitDoc>)),
     );
   } catch (error) {
     console.error("GET /api/habits", error);
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
     const created = await Habit.create({ userId, ...parsed.data });
     return NextResponse.json(
-      serializeHabit(created.toObject() as HabitDoc & { _id: string }),
+      serializeHabit(created.toObject() as Lean<HabitDoc>),
       { status: 201 },
     );
   } catch (error) {

@@ -69,13 +69,16 @@ export function CourseView() {
 
   const overallPct = Math.round((done.size / TOTAL_LESSONS) * 100);
   const active = useMemo(() => (openLesson ? findLesson(openLesson) : null), [openLesson]);
+  // Pulled out so TypeScript narrows it directly (destructuring loses the guard).
+  const activeBlocks = active?.lesson.blocks;
 
   // ---- Lesson detail view ----
-  if (active?.lesson.blocks) {
+  if (active && activeBlocks) {
     const { module, lesson } = active;
+    const blocks = activeBlocks;
     const isDone = done.has(lesson.id);
     // Completion is gated: every exercise item in this lesson must be ticked.
-    const exIds = collectExerciseIds(lesson.id, lesson.blocks);
+    const exIds = collectExerciseIds(lesson.id, blocks);
     const exDoneCount = exIds.filter((id) => exDone.has(id)).length;
     const canComplete = exIds.length === 0 || exDoneCount === exIds.length;
     return (
@@ -96,7 +99,7 @@ export function CourseView() {
         <Card>
           <CardContent className="p-5 sm:p-7">
             <LessonContent
-              blocks={lesson.blocks}
+              blocks={blocks}
               lessonId={lesson.id}
               checkedExercises={exDone}
               onToggleExercise={toggleExercise}

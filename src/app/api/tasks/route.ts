@@ -3,7 +3,7 @@ import type { FilterQuery } from "mongoose";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Task, type TaskDoc } from "@/models/Task";
 import { getUserId, unauthorized, badRequest, serverError } from "@/lib/api";
-import { serializeTask } from "@/lib/serialize";
+import { serializeTask, type Lean } from "@/lib/serialize";
 import { taskSchema } from "@/lib/validations";
 import { dayRange, parseISODate } from "@/lib/date";
 
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     if (status) filter.status = status;
 
     const docs = await Task.find(filter).sort({ date: 1, startTime: 1 }).lean();
-    return NextResponse.json(docs.map((d) => serializeTask(d as TaskDoc & { _id: string })));
+    return NextResponse.json(docs.map((d) => serializeTask(d as Lean<TaskDoc>)));
   } catch (error) {
     console.error("GET /api/tasks", error);
     return serverError();
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(
-      serializeTask(created.toObject() as TaskDoc & { _id: string }),
+      serializeTask(created.toObject() as Lean<TaskDoc>),
       { status: 201 },
     );
   } catch (error) {

@@ -9,7 +9,7 @@ import {
   notFound,
   serverError,
 } from "@/lib/api";
-import { serializeHabit } from "@/lib/serialize";
+import { serializeHabit, type Lean } from "@/lib/serialize";
 import { computeStreaks } from "@/lib/streak";
 import { todayISO } from "@/lib/date";
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
     await habit.save();
 
     return NextResponse.json(
-      serializeHabit(habit.toObject() as HabitDoc & { _id: string }),
+      serializeHabit(habit.toObject() as Lean<HabitDoc>),
     );
   } catch (error) {
     console.error("POST /api/habits/:id/toggle", error);

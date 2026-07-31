@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { DailyReview, type DailyReviewDoc } from "@/models/DailyReview";
 import { getUserId, unauthorized, badRequest, serverError } from "@/lib/api";
-import { serializeReview } from "@/lib/serialize";
+import { serializeReview, type Lean } from "@/lib/serialize";
 import { dailyReviewSchema } from "@/lib/validations";
 import { dayRange, parseISODate } from "@/lib/date";
 
@@ -26,13 +26,13 @@ export async function GET(req: NextRequest) {
         date: { $gte: start, $lt: end },
       }).lean();
       return NextResponse.json(
-        doc ? serializeReview(doc as DailyReviewDoc & { _id: string }) : null,
+        doc ? serializeReview(doc as Lean<DailyReviewDoc>) : null,
       );
     }
 
     const docs = await DailyReview.find({ userId }).sort({ date: -1 }).limit(30).lean();
     return NextResponse.json(
-      docs.map((d) => serializeReview(d as DailyReviewDoc & { _id: string })),
+      docs.map((d) => serializeReview(d as Lean<DailyReviewDoc>)),
     );
   } catch (error) {
     console.error("GET /api/reviews", error);
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     ).lean();
 
     return NextResponse.json(
-      serializeReview(doc as DailyReviewDoc & { _id: string }),
+      serializeReview(doc as Lean<DailyReviewDoc>),
       { status: 201 },
     );
   } catch (error) {

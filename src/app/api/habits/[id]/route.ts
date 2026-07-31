@@ -9,7 +9,7 @@ import {
   notFound,
   serverError,
 } from "@/lib/api";
-import { serializeHabit } from "@/lib/serialize";
+import { serializeHabit, type Lean } from "@/lib/serialize";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
       new: true,
     }).lean();
     if (!doc) return notFound("Habit not found");
-    return NextResponse.json(serializeHabit(doc as HabitDoc & { _id: string }));
+    return NextResponse.json(serializeHabit(doc as Lean<HabitDoc>));
   } catch (error) {
     console.error("PATCH /api/habits/:id", error);
     return serverError();

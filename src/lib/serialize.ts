@@ -20,6 +20,13 @@ import type { DailyReviewDoc } from "@/models/DailyReview";
 // Lean Mongoose docs carry an ObjectId `_id` plus timestamps.
 type Meta = { _id: Types.ObjectId | string; createdAt?: Date; updatedAt?: Date };
 
+/**
+ * Shape of a `.lean()` result for a given schema type.
+ * Routes cast to this instead of `T & { _id: string }`, because lean() keeps
+ * `_id` as an ObjectId — casting it to `string` makes TS reject the conversion.
+ */
+export type Lean<T> = T & Meta;
+
 const idToString = (id: Types.ObjectId | string): string =>
   typeof id === "string" ? id : id.toString();
 
