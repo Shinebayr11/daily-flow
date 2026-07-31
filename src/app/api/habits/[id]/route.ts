@@ -11,6 +11,9 @@ import {
 } from "@/lib/api";
 import { serializeHabit, type Lean } from "@/lib/serialize";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
+
 type Ctx = { params: Promise<{ id: string }> };
 
 const patchSchema = z.object({

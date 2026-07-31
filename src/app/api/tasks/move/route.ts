@@ -5,6 +5,8 @@ import { Task } from "@/models/Task";
 import { getUserId, unauthorized, badRequest, serverError } from "@/lib/api";
 import { parseISODate } from "@/lib/date";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
 const moveSchema = z.object({
   ids: z.array(z.string()).min(1, "Select at least one task"),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

@@ -7,6 +7,8 @@ import { serializeTask, type Lean } from "@/lib/serialize";
 import { taskSchema } from "@/lib/validations";
 import { dayRange, parseISODate } from "@/lib/date";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
 /**
  * GET /api/tasks
  * Query params (all optional):

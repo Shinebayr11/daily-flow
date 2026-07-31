@@ -5,6 +5,8 @@ import { getUserId, unauthorized, badRequest, serverError } from "@/lib/api";
 import { serializeHabit, type Lean } from "@/lib/serialize";
 import { habitSchema } from "@/lib/validations";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
 /** GET /api/habits — all habits for the current user. */
 export async function GET() {
   const userId = await getUserId();

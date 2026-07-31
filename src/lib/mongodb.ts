@@ -1,10 +1,9 @@
 import mongoose, { type Mongoose } from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Missing MONGODB_URI environment variable in .env.local");
-}
+// NOTE: the URI is read lazily inside connectToDatabase() — NOT at module load.
+// Next.js imports route modules while building ("Collecting page data"), and a
+// module-level throw there would fail the whole build even though the variable
+// is only needed at request time.
 
 /**
  * In development Next.js clears the module cache on every request, which would
@@ -29,8 +28,17 @@ global._mongooseCache = cached;
 export async function connectToDatabase(): Promise<Mongoose> {
   if (cached.conn) return cached.conn;
 
+  // Read at call time so the build never depends on this being present.
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error(
+      "Missing MONGODB_URI environment variable. Add it to .env.local locally, " +
+        "or to your hosting provider's Environment Variables in production.",
+    );
+  }
+
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI as string, {
+    cached.promise = mongoose.connect(uri, {
       bufferCommands: false,
     });
   }

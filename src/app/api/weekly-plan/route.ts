@@ -6,6 +6,8 @@ import { serializeWeeklyPlan, type Lean } from "@/lib/serialize";
 import { weeklyPlanSchema } from "@/lib/validations";
 import { getWeekStart, parseISODate } from "@/lib/date";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
 /** GET /api/weekly-plan?weekStart=yyyy-mm-dd (defaults to current week). */
 export async function GET(req: NextRequest) {
   const userId = await getUserId();

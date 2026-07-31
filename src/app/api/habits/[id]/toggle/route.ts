@@ -13,6 +13,9 @@ import { serializeHabit, type Lean } from "@/lib/serialize";
 import { computeStreaks } from "@/lib/streak";
 import { todayISO } from "@/lib/date";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
+
 type Ctx = { params: Promise<{ id: string }> };
 
 const toggleSchema = z.object({

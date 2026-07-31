@@ -6,6 +6,8 @@ import { WeeklyPlan } from "@/models/WeeklyPlan";
 import { getUserId, unauthorized, serverError } from "@/lib/api";
 import { buildDemoData } from "@/lib/demo-data";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
 /**
  * POST /api/seed — populate demo data for the signed-in user.
  * Skips seeding if the user already has tasks (avoids duplicates).

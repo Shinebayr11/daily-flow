@@ -6,6 +6,8 @@ import { serializeReview, type Lean } from "@/lib/serialize";
 import { dailyReviewSchema } from "@/lib/validations";
 import { dayRange, parseISODate } from "@/lib/date";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
 /**
  * GET /api/reviews
  *   ?date=yyyy-mm-dd  -> single review (or null)

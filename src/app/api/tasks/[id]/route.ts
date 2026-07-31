@@ -13,6 +13,9 @@ import { serializeTask, type Lean } from "@/lib/serialize";
 import { taskUpdateSchema } from "@/lib/validations";
 import { parseISODate } from "@/lib/date";
 
+// Per-user data — never prerender these at build time.
+export const dynamic = "force-dynamic";
+
 type Ctx = { params: Promise<{ id: string }> };
 
 /** PATCH /api/tasks/:id — edit fields, toggle completion, reschedule/move. */
