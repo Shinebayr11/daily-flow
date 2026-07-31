@@ -95,10 +95,10 @@ export function buildSandboxDoc(
 
   const encoded = JSON.stringify(sanitized);
 
+  // jsDelivr first (most reliable worldwide), unpkg as the fallback. Loading is
+  // done from JS rather than <script> tags so a dead CDN can be detected and
+  // retried instead of silently leaving a blank page.
   return `<!DOCTYPE html><html><head><meta charset="utf-8">
-<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
   body{font-family:system-ui,sans-serif;padding:16px;margin:0;color:#111}
   button{font:inherit;padding:6px 12px;border-radius:8px;border:1px solid #c7c7d1;background:#4f46e5;color:#fff;cursor:pointer}
@@ -107,12 +107,14 @@ export function buildSandboxDoc(
   .err{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px;
        color:#b91c1c;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:12.5px}
   .err b{display:block;margin-bottom:6px;font-family:system-ui,sans-serif;font-size:13px}
+  .load{color:#71717a;font-size:13px}
 </style>
 </head><body>
-<div id="root"></div>
+<div id="root"><p class="load">Ачаалж байна…</p></div>
 <script>
   var USER_CODE = ${encoded};
   var RUN_ID = ${runId};   // тухайн ажиллуулалтыг ялгах дугаар
+
   function showError(title, msg) {
     document.getElementById('root').innerHTML =
       '<div class="err"><b>⚠ ' + title + '</b>' +
@@ -120,10 +122,41 @@ export function buildSandboxDoc(
   }
   window.onerror = function (m) { showError('Ажиллах үеийн алдаа', m); return true; };
 
-  (function run() {
+  /** Нэг script-ийг ачаалж, амжилтгүй бол алдаа буцаана. */
+  function load(url) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = url;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error(url)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  /** Эхлээд jsDelivr, унавал unpkg-ээс оролдоно. */
+  function loadWithFallback(paths) {
+    return paths.reduce(function (chain, p) {
+      return chain.then(function () {
+        return load('https://cdn.jsdelivr.net/npm/' + p)
+          .catch(function () { return load('https://unpkg.com/' + p); });
+      });
+    }, Promise.resolve());
+  }
+
+  loadWithFallback([
+    'react@18/umd/react.development.js',
+    'react-dom@18/umd/react-dom.development.js',
+    '@babel/standalone/babel.min.js',
+  ]).then(runUserCode).catch(function (e) {
+    showError('Ачаалж чадсангүй',
+      'React/Babel-ийг интернэтээс татаж чадсангүй.\\n' +
+      'Сүлжээгээ шалгаад "Ажиллуулах"-ыг дахин дарна уу.\\n\\n' +
+      'Хаяг: ' + e.message);
+  });
+
+  function runUserCode() {
     if (!window.Babel || !window.React || !window.ReactDOM) {
-      showError('Ачаалж чадсангүй',
-        'React/Babel-ийг интернэтээс татаж чадсангүй.\\nХолболтоо шалгаад хуудсаа сэргээнэ үү.');
+      showError('Ачаалж чадсангүй', 'React/Babel ачаалагдсан ч бэлэн болсонгүй.');
       return;
     }
     var compiled;
@@ -147,11 +180,13 @@ export function buildSandboxDoc(
           'Кодондоо "function App() { ... }" гэсэн component заавал байх ёстой.');
         return;
       }
-      ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+      var mount = document.getElementById('root');
+      mount.innerHTML = '';                       // "Ачаалж байна…"-г арилгана
+      ReactDOM.createRoot(mount).render(React.createElement(App));
     } catch (e) {
       showError('Ажиллах үеийн алдаа', e.message);
     }
-  })();
+  }
 </script>
 </body></html>`;
 }
