@@ -118,6 +118,44 @@ export function collectExerciseIds(lessonId: string, blocks: ContentBlock[]) {
   return ids;
 }
 
+/** One half of a ✗/✓ comparison. Colour + icon so it reads without the label. */
+function ComparePane({
+  tone,
+  label,
+  code,
+}: {
+  tone: "bad" | "good";
+  label: string;
+  code: string;
+}) {
+  const bad = tone === "bad";
+  return (
+    <div
+      className={cn(
+        "overflow-hidden rounded-xl border",
+        bad
+          ? "border-red-500/30 bg-red-500/[0.04]"
+          : "border-emerald-500/30 bg-emerald-500/[0.04]",
+      )}
+    >
+      <div
+        className={cn(
+          "flex items-center gap-1.5 border-b px-3 py-1.5 text-xs font-semibold",
+          bad
+            ? "border-red-500/20 text-red-600 dark:text-red-400"
+            : "border-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+        )}
+      >
+        <span aria-hidden>{bad ? "✗" : "✓"}</span>
+        {label}
+      </div>
+      <pre className="overflow-x-auto p-3 text-[12.5px] leading-relaxed">
+        <code className="font-mono">{code}</code>
+      </pre>
+    </div>
+  );
+}
+
 /** Renders an array of authored content blocks. */
 export function LessonContent({
   blocks,
@@ -178,6 +216,32 @@ export function LessonContent({
               </div>
             );
           }
+          case "compare":
+            return (
+              <div key={i} className="space-y-2">
+                {block.title && (
+                  <p className="text-[15px] font-semibold">{block.title}</p>
+                )}
+                {/* Stacks on mobile, side-by-side from md up */}
+                <div className="grid gap-3 md:grid-cols-2">
+                  <ComparePane
+                    tone="bad"
+                    label={block.bad.label ?? "Буруу"}
+                    code={block.bad.code}
+                  />
+                  <ComparePane
+                    tone="good"
+                    label={block.good.label ?? "Зөв"}
+                    code={block.good.code}
+                  />
+                </div>
+                {block.note && (
+                  <p className="text-sm text-muted-foreground">
+                    {inline(block.note)}
+                  </p>
+                )}
+              </div>
+            );
           case "quiz":
             return <QuizBlock key={i} questions={block.questions} />;
           case "playground":

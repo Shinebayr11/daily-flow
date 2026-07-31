@@ -18,6 +18,10 @@ import {
   m8l1, m8l2, m8l3, m8l4,
   m9l1, m9l2, m9l3,
 } from "./lessons-m789";
+import {
+  m10l1, m10l2, m10l3, m10l4, m10l5,
+  m10l6, m10l7, m10l8, m10l9, m10l10,
+} from "./lessons-m10";
 
 // ---- Ерөнхий танилцуулга ----
 export const COURSE_OVERVIEW =
@@ -36,6 +40,7 @@ export const SCHEDULE: ScheduleRow[] = [
   { week: "1 дх", module: "7-р модуль", focus: "AI Image Model" },
   { week: "2 дх", module: "8-р модуль", focus: "Article Summarize & Quiz" },
   { week: "4 дх", module: "9-р модуль", focus: "Team Project" },
+  { week: "2 дх", module: "10-р модуль", focus: "Quiz App — эхнээс дуустал" },
 ];
 
 // ---- Шалгалтын бүтэц ----
@@ -195,6 +200,25 @@ export const MODULES: CourseModule[] = [
       { id: "m9l1", title: "Github Branch", blocks: m9l1 },
       { id: "m9l2", title: "Stand Up", blocks: m9l2 },
       { id: "m9l3", title: "Github project", blocks: m9l3 },
+    ],
+  },
+  {
+    id: "m10",
+    order: 10,
+    title: "Quiz App — эхнээс дуустал",
+    goal: "Бодит төслийн 14 алдааг ✗/✓ хэлбэрээр задалж, AI + Postgres апп барина.",
+    weeks: "2 дол. хоног",
+    lessons: [
+      { id: "m10l1", title: "Төслийн суурь", blocks: m10l1 },
+      { id: "m10l2", title: "Өгөгдлийн сан", blocks: m10l2 },
+      { id: "m10l3", title: "Нэвтрэлт", blocks: m10l3 },
+      { id: "m10l4", title: "Өгүүлэл оруулах UI", blocks: m10l4 },
+      { id: "m10l5", title: "AI хураангуй", blocks: m10l5 },
+      { id: "m10l6", title: "Хадгалах ба түүх", blocks: m10l6 },
+      { id: "m10l7", title: "Хажуугийн самбар", blocks: m10l7 },
+      { id: "m10l8", title: "Тест үүсгэх", blocks: m10l8 },
+      { id: "m10l9", title: "Тестийн хуудас", blocks: m10l9 },
+      { id: "m10l10", title: "Оноо ба дуусгал", blocks: m10l10 },
     ],
   },
 ];

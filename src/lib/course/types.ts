@@ -36,6 +36,20 @@ export type ContentBlock =
       type: "exercise";
       title?: string;
       items: string[];
+    }
+  /**
+   * Side-by-side ✗ wrong / ✓ right comparison. Stacks on small screens.
+   * Use for "here is the mistake, here is the fix" — the single most useful
+   * shape for teaching debugging.
+   */
+  | {
+      type: "compare";
+      title?: string;
+      /** Optional short label above each pane; defaults to "Буруу" / "Зөв". */
+      bad: { label?: string; code: string };
+      good: { label?: string; code: string };
+      /** One-line explanation shown under both panes. */
+      note?: string;
     };
 
 export interface Lesson {
