@@ -1,0 +1,46 @@
+import mongoose, { type Mongoose } from "mongoose";
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  throw new Error("Missing MONGODB_URI environment variable in .env.local");
+}
+
+/**
+ * In development Next.js clears the module cache on every request, which would
+ * open a brand new DB connection each time and quickly exhaust the pool.
+ * We cache the connection on the global object to reuse it across hot reloads.
+ */
+interface MongooseCache {
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
+}
+
+declare global {
+  // eslint-disable-next-line no-var
+  var _mongooseCache: MongooseCache | undefined;
+}
+
+const cached: MongooseCache =
+  global._mongooseCache ?? { conn: null, promise: null };
+
+global._mongooseCache = cached;
+
+export async function connectToDatabase(): Promise<Mongoose> {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI as string, {
+      bufferCommands: false,
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    cached.promise = null;
+    throw error;
+  }
+
+  return cached.conn;
+}

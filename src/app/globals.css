@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  DailyFlow theme tokens.
+  Primary = indigo/violet. Background = light gray. Card = white.
+  Plus semantic success (green) and warning (orange).
+*/
+@layer base {
+  :root {
+    --background: 220 20% 97%; /* light gray */
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%; /* white */
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 243 75% 59%; /* indigo-600 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 244 76% 96%;
+    --accent-foreground: 243 60% 40%;
+
+    --destructive: 0 84% 60%; /* red - high priority */
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%; /* green */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 25 95% 53%; /* orange */
+    --warning-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 243 75% 59%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 224 32% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 224 28% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 224 28% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 245 80% 68%; /* lighter indigo for dark bg */
+    --primary-foreground: 224 32% 8%;
+
+    --secondary: 222 20% 18%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 20% 18%;
+    --muted-foreground: 217 12% 65%;
+
+    --accent: 243 40% 24%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 65% 47%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 25 90% 58%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 222 20% 20%;
+    --input: 222 20% 20%;
+    --ring: 245 80% 68%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+  }
+}
