@@ -172,11 +172,46 @@ export default function Page() {
   { type: "callout", variant: "error", title: "Unexpected token — { } дотор if бичих", text: "`{if (x) {...}}` ажиллахгүй. Оронд нь `{x ? <A /> : <B />}` эсвэл `{x && <A />}` ашигла." },
 
   { type: "h", text: "Дасгал" },
-  { type: "exercise", items: [
-    "Хялбар: Туршилтын талбарт өөрийн нэр, төрсөн оноо хувьсагчаар зарлаад `{ }`-ээр харуул.",
-    "Дунд: Fragment (`<>...</>`) ашиглан 3 элемент буцаадаг component бич.",
-    "Дунд: Объект зарлаад `{obj.field}` хэлбэрээр 2 талбарыг нь харуул.",
-    "Хүнд: `{ }` дотор `1 + 2 * 3` бичээд гарах үр дүнг тайлбарла (яагаад 9 биш 7 вэ?).",
+  { type: "lab", mode: "react", title: "Дасгал — JSX-ийг алхам алхмаар", starter: `function App() {
+  // 1-р алхмаас эхэлнэ. Кодоо энд бич.
+  return (
+    <div>
+      <h2>Миний танилцуулга</h2>
+    </div>
+  );
+}`, steps: [
+    {
+      task: "Нэр, төрсөн он хоёрыг хувьсагчаар зарлаад `{ }`-ээр дэлгэцэд харуул.",
+      hint: "`const name = \"Бат\";` гэж return-ээс ДЭЭР зарлаад, JSX дотор `{name}` гэж бич.",
+      solution: `function App() {
+  const name = "Бат";
+  const birthYear = 2004;
+
+  return (
+    <div>
+      <h2>Миний танилцуулга</h2>
+      <p>Нэр: {name}</p>
+      <p>Төрсөн он: {birthYear}</p>
+    </div>
+  );
+}`,
+    },
+    {
+      task: "Одоо `{ }` дотор тооцоолол хий — насаа `2026 - birthYear` гэж бод.",
+      hint: "JSX-ийн `{ }` дотор ямар ч JavaScript илэрхийлэл бичиж болно.",
+    },
+    {
+      task: "Объект зарлаад (`const user = { city: \"УБ\", job: \"Оюутан\" }`) 2 талбарыг нь `{user.city}` хэлбэрээр харуул.",
+      hint: "Объектыг шууд `{user}` гэж харуулж БОЛОХГҮЙ — талбарыг нь заа.",
+    },
+    {
+      task: "`{ }` дотор `1 + 2 * 3` бичээд ажиллуул. Яагаад 9 биш 7 гарч байна вэ?",
+      hint: "JavaScript-ийн үйлдлийн дараалал: үржих нэмэхээс түрүүлнэ. 9 гаргах бол `(1 + 2) * 3`.",
+    },
+    {
+      task: "Хамгийн гадна талын `<div>`-ыг Fragment (`<>...</>`) болгож сольж, ажиллаж байгаа эсэхийг шалга.",
+      hint: "Fragment нь DOM-д илүү элемент үүсгэхгүй. `<div>` → `<>`, `</div>` → `</>`.",
+    },
   ] },
 
   { type: "h", text: "Шалгах асуулт" },
@@ -342,11 +377,49 @@ function App() {
   { type: "callout", variant: "warn", title: "Component дотор component зарлах", text: "`function Page() { function Card() {...} ... }` гэж дотор нь зарлаж болохгүй — render бүрт шинээр үүсч гүйцэтгэл муудна. Гадна нь зарла." },
 
   { type: "h", text: "Дасгал" },
-  { type: "exercise", items: [
-    "Хялбар: Туршилтын талбарт `Sidebar` component нэмж `App` дотор дууд.",
-    "Дунд: `Card` component үүсгээд `App` дотор 3 удаа дууд.",
-    "Дунд: `Header` дотор `Logo` component үүсгэж 2 түвшний nesting хий.",
-    "Хүнд: Дээрх бүтцийг бодит төсөлд файл болгон салгаж (`components/` хавтас) бич.",
+  { type: "lab", mode: "react", title: "Дасгал — Хуудсаа component болгон угсрах", starter: `function Header() {
+  return <h2>Миний сайт</h2>;
+}
+
+function App() {
+  return (
+    <div>
+      <Header />
+    </div>
+  );
+}`, steps: [
+    {
+      task: "`Sidebar` нэртэй component үүсгээд `App` дотор `<Sidebar />` гэж дууд.",
+      hint: "Component нэр ЗААВАЛ том үсгээр эхэлнэ. Жижиг үсгээр бичвэл React үүнийг HTML тэг гэж үзнэ.",
+      solution: `function Header() {
+  return <h2>Миний сайт</h2>;
+}
+
+function Sidebar() {
+  return <nav>Цэс: Нүүр · Тухай · Холбоо</nav>;
+}
+
+function App() {
+  return (
+    <div>
+      <Header />
+      <Sidebar />
+    </div>
+  );
+}`,
+    },
+    {
+      task: "`Card` component үүсгээд `App` дотор 3 удаа дууд. Гурвуулаа ижил харагдана — энэ бол хэвийн.",
+      hint: "Нэг component-ыг хэдэн ч удаа дуудаж болно. Дараагийн хичээлд props-оор өөр өөр болгоно.",
+    },
+    {
+      task: "`Logo` component үүсгээд `Header` ДОТОР нь дууд — 2 түвшний nesting болно.",
+      hint: "`App` → `Header` → `Logo`. Component дотор өөр component дуудаж болно.",
+    },
+    {
+      task: "`Footer` component нэмж, `App`-ийн бүтцийг Header → Sidebar → Card×3 → Footer дараалалд оруул.",
+      hint: "JSX-д элементийн дараалал нь дэлгэц дээрх дарааллыг тодорхойлно.",
+    },
   ] },
 
   { type: "h", text: "Шалгах асуулт" },
@@ -527,11 +600,54 @@ function App() {
   { type: "callout", variant: "warn", title: "Props хэт олон болох", text: "8-10 props болбол component хэт олон ажил хийж байна гэсэн үг. Жижиг component-д хуваахыг бод." },
 
   { type: "h", text: "Дасгал" },
-  { type: "exercise", items: [
-    "Хялбар: `Greeting`-д `city` props нэмж харуул.",
-    "Дунд: `UserCard` component үүсгээд `name`, `email`, `role` props дамжуул.",
-    "Дунд: `isVip` boolean props нэмж, үнэн бол ⭐ тэмдэг харуул.",
-    "Хүнд: `children` props ашиглаж `Alert` component хий (title + доторх дурын агуулга).",
+  { type: "lab", mode: "react", title: "Дасгал — Props-оор өгөгдөл дамжуулах", starter: `function Greeting({ name }) {
+  return <p>Сайн уу, {name}!</p>;
+}
+
+function App() {
+  return (
+    <div>
+      <Greeting name="Бат" />
+      <Greeting name="Сараа" />
+    </div>
+  );
+}`, steps: [
+    {
+      task: "`Greeting`-д `city` props нэмж, \"Сайн уу, Бат! (УБ)\" гэж харуулдаг болго.",
+      hint: "Хоёр газар засна: `function Greeting({ name, city })` ба `<Greeting name=\"Бат\" city=\"УБ\" />`.",
+      solution: `function Greeting({ name, city }) {
+  return (
+    <p>
+      Сайн уу, {name}! ({city})
+    </p>
+  );
+}
+
+function App() {
+  return (
+    <div>
+      <Greeting name="Бат" city="УБ" />
+      <Greeting name="Сараа" city="Дархан" />
+    </div>
+  );
+}`,
+    },
+    {
+      task: "`UserCard` component үүсгээд `name`, `email`, `role` гурван props дамжуул. `App` дотор 2 удаа өөр өгөгдлөөр дууд.",
+      hint: "Props нь объект — `function UserCard({ name, email, role })` гэж задалж авна.",
+    },
+    {
+      task: "`UserCard`-д `isVip` boolean props нэмж, үнэн бол нэрийн хажууд ⭐ харуул.",
+      hint: "`<UserCard isVip />` гэж бичвэл `true` гэсэн үг. Харуулахдаа `{isVip && \"⭐\"}`.",
+    },
+    {
+      task: "Тоон props дамжуулж үз — `<UserCard age={25} />`. Хашилтанд `age=\"25\"` гэж бичвэл юу болохыг ажигла.",
+      hint: "Хашилттай бол текст (`\"25\"`), угалзан хаалттай бол тоо (`25`). `typeof age` гэж шалгаж болно.",
+    },
+    {
+      task: "`children` props ашиглаж `Alert` component хий — гарчиг props-оор, доторх агуулга нь `children`-ээр орно.",
+      hint: "`function Alert({ title, children })` → `<Alert title=\"Анхаар\"><p>Ямар нэг зүйл</p></Alert>`",
+    },
   ] },
 
   { type: "h", text: "Шалгах асуулт" },
@@ -746,12 +862,45 @@ function TodoList() {
   { type: "callout", variant: "error", title: "Cannot read properties of undefined (reading 'map')", text: "Массив хараахан ирээгүй (undefined). `{items?.map(...)}` эсвэл `const items = data ?? []` гэж хамгаал." },
 
   { type: "h", text: "Дасгал" },
-  { type: "exercise", items: [
-    "Хялбар: `score` хувьсагч 60-аас их бол \"Тэнцсэн\", үгүй бол \"Унасан\" харуул.",
-    "Дунд: Найзуудынхаа нэрсийн массиваас жагсаалт зур (id-тай объект ашигла).",
-    "Дунд: Хоосон массив үед \"Хоосон байна\" гэж харуулдаг болго.",
-    "Хүнд: `filter`-ээр зөвхөн дуусаагүй ажлуудыг харуулж, тоог нь доор бич.",
-    "Хүнд: `{count && ...}` дээр count=0 болгож юу болохыг ажиглаад зөв болго.",
+  { type: "lab", mode: "react", title: "Дасгал — Нөхцөл ба жагсаалт", starter: `function App() {
+  const score = 75;
+
+  return (
+    <div>
+      <h3>Дүн: {score}</h3>
+    </div>
+  );
+}`, steps: [
+    {
+      task: "`score` 60-аас их бол \"Тэнцсэн\", үгүй бол \"Унасан\" гэж харуул. Дараа нь `score`-ыг 40 болгож шалга.",
+      hint: "Тернар оператор: `{score >= 60 ? \"Тэнцсэн\" : \"Унасан\"}`",
+      solution: `function App() {
+  const score = 75;
+
+  return (
+    <div>
+      <h3>Дүн: {score}</h3>
+      <p>{score >= 60 ? "Тэнцсэн ✓" : "Унасан ✗"}</p>
+    </div>
+  );
+}`,
+    },
+    {
+      task: "Найзуудынхаа нэрсийг массив болгож (`{ id, name }` объект) `.map()`-ээр жагсаалт зур.",
+      hint: "`{friends.map((f) => <li key={f.id}>{f.name}</li>)}` — `key` заавал, index биш `id`.",
+    },
+    {
+      task: "Массив хоосон үед \"Хоосон байна\" гэж харуулдаг болго. Туршихдаа массиваа `[]` болго.",
+      hint: "`{friends.length === 0 ? <p>Хоосон байна</p> : <ul>...</ul>}`",
+    },
+    {
+      task: "Массивт `done: true/false` талбар нэмж, `.filter()`-ээр зөвхөн дуусаагүйг харуул. Тоог нь доор бич.",
+      hint: "`const pending = friends.filter((f) => !f.done);` дараа нь `pending.map(...)` ба `pending.length`.",
+    },
+    {
+      task: "Одоо `{pending.length && <p>...</p>}` гэж бичээд массивыг хоосон болго. Дэлгэц дээр юу гарч байна вэ?",
+      hint: "0 гарна! `0` нь falsy ч React түүнийг ХЭВЛЭДЭГ. `{pending.length > 0 && ...}` гэж зас.",
+    },
   ] },
 
   { type: "h", text: "Шалгах асуулт" },

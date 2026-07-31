@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import type { ContentBlock } from "@/lib/course/types";
 import { CodePlayground } from "./code-playground";
 import { ExerciseBlock } from "./exercise-block";
+import { ExerciseLab } from "./exercise-lab";
 
 /**
  * Minimal, safe inline formatter: supports **bold** and `inline code`.
@@ -107,12 +108,17 @@ export function exerciseId(lessonId: string, bi: number, idx: number) {
   return `${lessonId}:${bi}:${idx}`;
 }
 
-/** All exercise ids contained in a set of blocks (for completion gating). */
+/**
+ * All completable ids in a set of blocks (for the lesson completion gate).
+ * Both checklist items and lab steps count.
+ */
 export function collectExerciseIds(lessonId: string, blocks: ContentBlock[]) {
   const ids: string[] = [];
   blocks.forEach((b, bi) => {
     if (b.type === "exercise") {
       b.items.forEach((_, idx) => ids.push(exerciseId(lessonId, bi, idx)));
+    } else if (b.type === "lab") {
+      b.steps.forEach((_, idx) => ids.push(exerciseId(lessonId, bi, idx)));
     }
   });
   return ids;
@@ -253,6 +259,22 @@ export function LessonContent({
                 code={block.code}
               />
             );
+          case "lab": {
+            const ids = block.steps.map((_, idx) => exerciseId(lessonId, i, idx));
+            return (
+              <ExerciseLab
+                key={i}
+                mode={block.mode}
+                title={block.title}
+                starter={block.starter}
+                steps={block.steps}
+                ids={ids}
+                checkedIds={checkedExercises}
+                onToggle={onToggleExercise}
+                storageKey={`dailyflow.lab.${lessonId}.${i}`}
+              />
+            );
+          }
           case "exercise": {
             const ids = block.items.map((_, idx) => exerciseId(lessonId, i, idx));
             return (

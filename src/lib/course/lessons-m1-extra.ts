@@ -312,11 +312,69 @@ function App() {
   { type: "callout", variant: "error", title: "Component-ыг дотор нь зарлах", text: "`function UserList() { function UserRow() {...} }` — render бүрт UserRow шинээр үүсч, React түүнийг өөр component гэж үзэн бүх төлөвийг устгана. Гадна нь зарла." },
 
   { type: "h", text: "Дасгал" },
-  { type: "exercise", items: [
-    "Хялбар: Туршилтын талбарт хэрэглэгч нэмж жагсаалтыг уртасга.",
-    "Дунд: `UserInfo` component нэмж, `UserRow` дотор `Avatar` + `UserInfo` гэж 2 хүүхэдтэй болго.",
-    "Дунд: `Badge` component үүсгэж хэрэглэгчийн үүрэг (admin/user) харуул — 4 түвшин болно.",
-    "Хүнд: Prop drilling-ийн жишээ бичиж, дараа нь `children` composition-оор шийдэж үз.",
+  { type: "lab", mode: "react", title: "Дасгал — Component модыг гүнзгийрүүлэх", starter: `function UserRow({ user }) {
+  return <li>{user.name}</li>;
+}
+
+function UserList({ users }) {
+  return (
+    <ul>
+      {users.map((u) => (
+        <UserRow key={u.id} user={u} />
+      ))}
+    </ul>
+  );
+}
+
+function App() {
+  const users = [
+    { id: 1, name: "Бат", role: "admin" },
+    { id: 2, name: "Сараа", role: "user" },
+  ];
+
+  return <UserList users={users} />;
+}`, steps: [
+    {
+      task: "Массивт 2 хэрэглэгч нэмж жагсаалтыг уртасга. `key` зөв ажиллаж байгааг console-оос шалга.",
+      hint: "`id` нь давхардахгүй байх ёстой. Давхардвал React анхааруулга өгнө.",
+    },
+    {
+      task: "`Avatar` component үүсгээд `UserRow` дотор дууд — нэрийн эхний үсгийг дугуй дотор харуул.",
+      hint: "`user.name[0]` эхний үсгийг өгнө. `style={{borderRadius:\"50%\"}}` дугуй болгоно.",
+      solution: `function Avatar({ name }) {
+  return (
+    <span style={{
+      display: "inline-flex", width: 28, height: 28,
+      borderRadius: "50%", background: "#e0e7ff",
+      alignItems: "center", justifyContent: "center",
+      marginRight: 8, fontSize: 13,
+    }}>
+      {name[0]}
+    </span>
+  );
+}
+
+function UserRow({ user }) {
+  return (
+    <li style={{ display: "flex", alignItems: "center", padding: 4 }}>
+      <Avatar name={user.name} />
+      {user.name}
+    </li>
+  );
+}`,
+    },
+    {
+      task: "`UserInfo` component нэмж (нэр + үүрэг), `UserRow` нь `Avatar` + `UserInfo` гэсэн 2 хүүхэдтэй болго.",
+      hint: "Одоо мод нь App → UserList → UserRow → (Avatar, UserInfo) болно.",
+    },
+    {
+      task: "`Badge` component үүсгэж `UserInfo` дотор дууд — admin бол өөр өнгөтэй. 4 түвшний гүн болно.",
+      hint: "`{role === \"admin\" ? \"#fee2e2\" : \"#e5e7eb\"}` гэж өнгийг нөхцөлтэй өг.",
+    },
+    {
+      task: "Одоо `theme` гэсэн утгыг App-аас Badge хүртэл prop-оор дамжуулж үз. Хэдэн component дундуур дамжив?",
+      hint: "App → UserList → UserRow → UserInfo → Badge = 4 дамжуулалт. Энэ бол prop drilling. Дараагийн модульд Context-оор шийднэ.",
+    },
   ] },
 
   { type: "h", text: "Шалгах асуулт" },

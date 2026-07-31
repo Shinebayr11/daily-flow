@@ -1,3 +1,13 @@
+/** One task inside a stepped exercise lab. */
+export interface LabStep {
+  /** What the learner must add to the code they already have. */
+  task: string;
+  /** Optional nudge, hidden behind a button. */
+  hint?: string;
+  /** Optional reference answer, hidden behind a button. */
+  solution?: string;
+}
+
 // Types for the built-in "Хичээл" (Lessons) section.
 // Lesson content is authored as typed content blocks — no markdown parser or
 // extra dependency needed, so it renders reliably.
@@ -50,6 +60,24 @@ export type ContentBlock =
       good: { label?: string; code: string };
       /** One-line explanation shown under both panes. */
       note?: string;
+    }
+  /**
+   * Stepped coding exercise done right on the lesson page.
+   *
+   * There is ONE editor for the whole lab: the learner's code carries over
+   * from step to step, because each task builds on the previous one
+   * ("now add a button to the form you just made").
+   *
+   * Every step counts towards the lesson completion gate, exactly like an
+   * `exercise` item does.
+   */
+  | {
+      type: "lab";
+      mode: "react" | "html";
+      title?: string;
+      /** Code the learner starts from at step 1. */
+      starter: string;
+      steps: LabStep[];
     };
 
 export interface Lesson {
