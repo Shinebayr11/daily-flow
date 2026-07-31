@@ -13,6 +13,13 @@ export const metadata: Metadata = {
     "Plan your week, prep tomorrow, track habits and review your day.",
 };
 
+/**
+ * Every page is behind Clerk auth, so nothing here can be usefully prerendered
+ * at build time. Forcing dynamic rendering also stops the build from
+ * evaluating ClerkProvider (which needs a publishable key) during `next build`.
+ */
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: {
