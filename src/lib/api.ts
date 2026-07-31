@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { isAllowedUser } from "@/lib/allowlist";
 
-/** Resolve the current Clerk user id, or null if signed out. */
+/**
+ * Resolve the current Clerk user id, or null if signed out.
+ *
+ * Also returns null for a signed-in user who is not on `ALLOWED_EMAILS`, so
+ * every route that already guards with `if (!userId) return unauthorized()`
+ * is covered by the allowlist without any further change.
+ */
 export async function getUserId(): Promise<string | null> {
   const { userId } = await auth();
+  if (!userId) return null;
+  if (!(await isAllowedUser())) return null;
   return userId;
 }
 
